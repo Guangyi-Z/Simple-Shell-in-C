@@ -1,5 +1,6 @@
 
 #define MAXARGS 10
+#define CMD_MAXLEN 100
 
 #define die(e) do { fprintf(stderr, e); exit(EXIT_FAILURE); } while (0);
 
@@ -28,7 +29,3 @@ struct pipecmd {
   struct cmd *right; // right side of pipe
 };
 
-// env and cmd
-
-#define CMD_MAXLEN 100
-char* searchcmd(char *cmd, int len, char* name);

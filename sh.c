@@ -78,7 +78,7 @@ void runcmd(struct cmd *cmd)
     if(ecmd->argv[0] == 0)
       exit(0);
 	char abscmd[CMD_MAXLEN];
-	if(NULL == searchcmd(abscmd, CMD_MAXLEN, ecmd->argv[0])){
+	if(NULL == searchfile(abscmd, CMD_MAXLEN, ecmd->argv[0], F_OK|R_OK|X_OK)){
 		fprintf(stderr, "file not exist or permission denied\n");
 		exit(-1);
 	}
@@ -90,9 +90,39 @@ void runcmd(struct cmd *cmd)
   case '>':
   case '<':
     rcmd = (struct redircmd*)cmd;
-    fprintf(stderr, "redir not implemented\n");
-    // Your code here ...
+	char absfile[CMD_MAXLEN];
+	memset(absfile, 0, sizeof(absfile));
+	int newfd;
+	if(rcmd->fd == 0){
+		if(-1 == access(rcmd->file, F_OK|R_OK)){
+			newfd= open(rcmd->file, rcmd->mode);
+		}
+		else {
+			if(NULL == searchfile(absfile, sizeof(absfile), rcmd->file, F_OK|R_OK)){
+				die("redirction file not exist or permission denied");
+			}
+			else{
+				newfd= open(absfile, rcmd->mode);
+			}
+		}
+	}
+	else{
+		if('/' == (rcmd->file)[0]){
+			newfd= open(rcmd->file, rcmd->mode);
+		}
+		else{
+			char* pwd= getenv("PWD");
+			strcat(absfile, pwd);
+			strncat(absfile, "/", 1);
+			strncat(absfile, rcmd->file, sizeof(rcmd->file));
+			newfd= open(absfile, rcmd->mode, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP);
+		}
+	}
+	int bakfd= dup(rcmd->fd);
+	dup2(newfd, rcmd->fd);
+	close(newfd);
     runcmd(rcmd->cmd);
+	dup2(bakfd, rcmd->fd);
     break;
 
   case '|':

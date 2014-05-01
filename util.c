@@ -1,7 +1,54 @@
 #include<assert.h>
-#include "util.h"
+#include<stdlib.h>
+#include<unistd.h>
+#include<string.h>
+#include<stdio.h>
+#include"util.h"
 
 char whitespace[] = " \t\r\n\v";
+
+/*
+ * search file under PATH & PWD directory.
+ * return complete file path if succeed, otherwise NULL
+ */
+char* searchfile(char *file, int len, char* name, int mode){
+	// PATH
+	char* env= getenv("PATH");
+	char* end= env + strlen(env);
+	char *spath, *epath;
+	while( scan(&env, end, ":", &spath, &epath)){
+		env++;
+		if(spath == epath){
+			break;
+		}
+		memset(file, 0, len);
+		if(epath-spath+strlen(name)+2 > len){ // 1 for '/', 1 for '\0'
+			fprintf(stderr, "file abs path too long\n");
+		}
+		strncat(file, spath, epath-spath);
+		strncat(file, "/", 1);
+		strncat(file, name, strlen(name));
+		if( 0 == access(file, mode) ){
+			return file;
+		}
+	}
+	// PWD
+	env= getenv("PWD");
+	end= env + strlen(env);
+	memset(file, 0, len);
+	if(end-env+strlen(name)+2 > len){ // 1 for '/', 1 for '\0'
+		fprintf(stderr, "file abs path too long\n");
+	}
+	strncat(file, env, end-env);
+	strncat(file, "/", 1);
+	strncat(file, name, strlen(name));
+	if( 0 == access(file, mode) ){
+		return file;
+	}
+
+	return NULL;
+}
+
 
 /*
  * make [q, eq] the first substr before any char in toks.

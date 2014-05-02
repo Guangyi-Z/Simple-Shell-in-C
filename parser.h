@@ -1,0 +1,2 @@
+
+struct cmd *parsecmd(char*);

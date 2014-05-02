@@ -6,6 +6,7 @@
 #include"util.h"
 
 char whitespace[] = " \t\r\n\v";
+char symbols[] = "<|>";
 
 /*
  * search file under PATH & PWD directory.
@@ -58,16 +59,17 @@ searchfile(char *file, int len, char* name, int mode){
 int 
 scan(char **ps, char *es, const char *toks, char **q, char **eq){
 
-	skip_whitespace(ps, es);
-	char **s= ps;
-	*q= *s;
+	char* s = *ps;
+	while(s < es && strchr(whitespace, *s)) // skip whitespace
+		s++;
 
-	while( *s<es && !strchr(toks, **s) ){
-		*s= *s+1;
-	}
+	*q= s;
+	while( s<es && !strchr(toks, *s) )
+		s++;
+	*eq= s;
 
-	*eq= *s;
-	return *s==es? 0 : 1;
+	*ps = s;
+	return s==es? 0 : 1;
 }
 
 // make a copy of the characters in the input buffer, starting from s through es.
@@ -84,20 +86,6 @@ mkcopy(char *s, char *es)
 }
 
 /*
- *  * make *ps point to the first non-whitespace char or the null of the end
- *   */
-void
-skip_whitespace(char **ps, char *es)
-{
-	char *s;
-
-	s = *ps;
-	while(s < es && strchr(whitespace, *s))
-		s++;
-	*ps = s;
-}
-
-/*
  * skip the whitespaces till the next char, which is tested to see whether it occurs in toks char stream
  */
 int
@@ -106,15 +94,45 @@ peek(char **ps, char *es, char *toks)
 	char *s;
 
 	s = *ps;
-	while(s < es && strchr(whitespace, *s))
+	while(s < es && strchr(whitespace, *s)) // skip whitespace
 		s++;
 	*ps = s;
-	return *s && strchr(toks, *s);
+	return *s && strchr(toks, *s); // is first char in toks?
 }
 
 int
-istoks(char *s, char *toks)
+gettoken(char **ps, char *es, char **q, char **eq)
 {
-	return *s && strchr(toks, *s);
-}
+	char *s;
+	int ret;
 
+	s = *ps;
+	while(s < es && strchr(whitespace, *s))
+		s++;
+	if(q)
+		*q = s;
+	ret = *s;
+	switch(*s){
+		case 0: // end
+			break;
+		case '|':
+		case '<':
+			s++;
+			break;
+		case '>':
+			s++;
+			break;
+		default:
+			ret = 'a';
+			while(s < es && !strchr(whitespace, *s) && !strchr(symbols, *s))
+				s++;
+			break;
+	}
+	if(eq)
+		*eq = s;
+
+	while(s < es && strchr(whitespace, *s))
+		s++;
+	*ps = s;
+	return ret;
+}

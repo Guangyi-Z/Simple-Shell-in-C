@@ -16,6 +16,10 @@ The parser recognizes only simple shell commands such as the following:
 * ls | sort | uniq | wc
 * rm y
 
+MAX AUGUMENTS LIMIT for each single command: 10
+MAX LENGTH LIMIT for user input: 100
+MAX LENGTH LIMIT for absolute path of command: 100
+
 ===Impl
 
 getCmd

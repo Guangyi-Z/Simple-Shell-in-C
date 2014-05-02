@@ -32,4 +32,5 @@ include $(SOURCES:.c=.d)
 
 clean:
 	rm $ $(OBJS) $(PROGRAM);
+	rm *.d
 

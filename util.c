@@ -11,7 +11,8 @@ char whitespace[] = " \t\r\n\v";
  * search file under PATH & PWD directory.
  * return complete file path if succeed, otherwise NULL
  */
-char* searchfile(char *file, int len, char* name, int mode){
+char* 
+searchfile(char *file, int len, char* name, int mode){
 	// PATH
 	char* env= getenv("PATH");
 	char* end= env + strlen(env);
@@ -54,7 +55,8 @@ char* searchfile(char *file, int len, char* name, int mode){
  * make [q, eq] the first substr before any char in toks.
  * return 1 if any char in toks exists, 0 otherwise.
  */
-int scan(char **ps, char *es, const char *toks, char **q, char **eq){
+int 
+scan(char **ps, char *es, const char *toks, char **q, char **eq){
 
 	skip_whitespace(ps, es);
 	char **s= ps;
@@ -73,12 +75,12 @@ int scan(char **ps, char *es, const char *toks, char **q, char **eq){
 char *
 mkcopy(char *s, char *es)
 {
-  int n = es - s;
-  char *c = malloc(n+1);
-  assert(c);
-  strncpy(c, s, n);
-  c[n] = 0;
-  return c;
+	int n = es - s;
+	char *c = malloc(n+1);
+	assert(c);
+	strncpy(c, s, n);
+	c[n] = 0;
+	return c;
 }
 
 /*
@@ -87,12 +89,12 @@ mkcopy(char *s, char *es)
 void
 skip_whitespace(char **ps, char *es)
 {
-	  char *s;
-	    
-	  s = *ps;
-      while(s < es && strchr(whitespace, *s))
-		    s++;
-	  *ps = s;
+	char *s;
+
+	s = *ps;
+	while(s < es && strchr(whitespace, *s))
+		s++;
+	*ps = s;
 }
 
 /*
@@ -101,18 +103,18 @@ skip_whitespace(char **ps, char *es)
 int
 peek(char **ps, char *es, char *toks)
 {
-  char *s;
+	char *s;
 
-  s = *ps;
-  while(s < es && strchr(whitespace, *s))
-    s++;
-  *ps = s;
-  return *s && strchr(toks, *s);
+	s = *ps;
+	while(s < es && strchr(whitespace, *s))
+		s++;
+	*ps = s;
+	return *s && strchr(toks, *s);
 }
 
 int
 istoks(char *s, char *toks)
 {
-	  return *s && strchr(toks, *s);
+	return *s && strchr(toks, *s);
 }
 

@@ -28,13 +28,13 @@ MAX LENGTH LIMIT for absolute path of command: 100
 
 Open your terminal, run the Makefile under the project directory:
 
-```sh
+```bash
 make all
 ```
 
 Run following to delete the intermediate files and the executable:
 
-```sh
+```bash
 make clean
 ```
 

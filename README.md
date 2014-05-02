@@ -2,7 +2,7 @@ Simple Shell
 =====
 
 
-###Intro
+##Intro
 
 \*nix-like terminal shell, derived from the skeleton of the [xv6 shell](http://pdos.csail.mit.edu/6.828/2012/homework/sh.c).
 The skeleton shell contains two main parts: parsing shell commands and run the command in saperate processes. 
@@ -39,7 +39,7 @@ Run following to delete the intermediate files and the executable:
 make clean
 ```
 
-###Impl
+##Impl
 
 ####Main Flow
 ![main-flow](images/main.png)
